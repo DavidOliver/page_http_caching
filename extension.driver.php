@@ -83,15 +83,10 @@ class Extension_HTTP_Caching extends Extension{
 	public function updateHeaders(){
 
 		$config = Symphony::Configuration()->get('http_caching');
-		//echo"<pre>";print_r($config);echo"</pre>";die;
 
 		if ($config['default_caching'] == 'on') {
 
-			if ($config['default_intermediary'] == 'yes') {
-				$type = 'public';
-			} else {
-				$type = 'private';
-			}
+			$type = ($config['default_intermediary'] == 'yes') ? 'public' : 'private';
 
 			if ($config['default_max_age'] != '' && ctype_digit($config['default_max_age'])) {
 				$max_age = $config['default_max_age'];
@@ -113,12 +108,6 @@ class Extension_HTTP_Caching extends Extension{
 		}
 
 	}
-
-	/*
-	// Retreiving config
-	Symphony::Configuration()->get('http_caching');
-	Symphony::Configuration()->get('option_name', 'http_caching');
-	*/
 	
 }
 
