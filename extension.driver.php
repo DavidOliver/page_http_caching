@@ -17,7 +17,7 @@ class Extension_HTTP_Caching extends Extension{
 			array(
 				'page'      => '/frontend/',
 				'delegate'  => 'FrontendPreRenderHeaders',
-				'callback'  => 'addHeaders'
+				'callback'  => 'updateHeaders'
 			)
 		);
 	}
@@ -80,19 +80,45 @@ class Extension_HTTP_Caching extends Extension{
 		$context['form']->appendChild($fieldset);
 	}
 
-	public function addHeaders(){
-		// Remove unnecessary/unwanted headers
-		Frontend::Page()->removeHeaderFromPage('Expires');
-		Frontend::Page()->removeHeaderFromPage('Last-Modified');
-		Frontend::Page()->removeHeaderFromPage('Pragma');
-		/*
-		Frontend::Page()->addHeaderToPage('Expires', '');
-		Frontend::Page()->addHeaderToPage('Last-Modified', '');
-		Frontend::Page()->addHeaderToPage('Pragma', '');
-		*/
+	public function updateHeaders(){
 
-		Frontend::Page()->addHeaderToPage('Cache-Control', 'public, max-age=60');
+		$config = Symphony::Configuration()->get('http_caching');
+		//echo"<pre>";print_r($config);echo"</pre>";die;
+
+		if ($config['default_caching'] == 'on') {
+
+			if ($config['default_intermediary'] == 'yes') {
+				$type = 'public';
+			} else {
+				$type = 'private';
+			}
+
+			if ($config['default_max_age'] != '' && ctype_digit($config['default_max_age'])) {
+				$max_age = $config['default_max_age'];
+			} else {
+				return false;
+			}
+
+			// Remove unnecessary/unwanted headers
+			Frontend::Page()->removeHeaderFromPage('Expires');
+			Frontend::Page()->removeHeaderFromPage('Last-Modified');
+			Frontend::Page()->removeHeaderFromPage('Pragma');
+			/*
+			Frontend::Page()->addHeaderToPage('Expires', '');
+			Frontend::Page()->addHeaderToPage('Last-Modified', '');
+			Frontend::Page()->addHeaderToPage('Pragma', '');
+			*/
+
+			Frontend::Page()->addHeaderToPage('Cache-Control', $type . ', max-age=' . $max_age);
+		}
+
 	}
+
+	/*
+	// Retreiving config
+	Symphony::Configuration()->get('http_caching');
+	Symphony::Configuration()->get('option_name', 'http_caching');
+	*/
 	
 }
 
