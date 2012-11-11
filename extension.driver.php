@@ -1,10 +1,14 @@
 <?php
 
+require_once(TOOLKIT . '/class.mysql.php');
+
 class Extension_HTTP_Caching extends Extension{
+
+	const TBL_NAME = 'tbl_http_caching';
 
 	public function install(){
 		Symphony::Database()->query(
-			'CREATE TABLE `tbl_http_caching` (
+			'CREATE TABLE `' . self::TBL_NAME . '` (
 				`page_id` INT(11) unsigned NOT NULL,
 				`caching` BOOLEAN NOT NULL,
 				`intermediary` BOOLEAN NOT NULL,
@@ -26,7 +30,7 @@ class Extension_HTTP_Caching extends Extension{
 	public function uninstall(){
 		Symphony::Configuration()->remove('http_caching');
 		Symphony::Configuration()->write();
-		Symphony::Database()->query('DROP TABLE `tbl_http_caching`');
+		Symphony::Database()->query('DROP TABLE `' . self::TBL_NAME . '`');
 	}
 	
 	public function getSubscribedDelegates(){
@@ -42,11 +46,27 @@ class Extension_HTTP_Caching extends Extension{
 				'callback'  => 'appendPageSettings'
 			),
 			array(
+				'page'      => '/blueprints/pages/',
+				'delegate'  => 'PagePostEdit',
+				'callback'  => 'savePageSettings'
+			),
+			array(
 				'page'      => '/frontend/',
 				'delegate'  => 'FrontendPreRenderHeaders',
 				'callback'  => 'updateHeaders'
 			)
 		);
+	}
+
+	public function savePageSettings($context){
+
+		$fields = array(
+			'page_id' => $context['page_id'],
+			'caching' => 0,
+			'intermediary' => 0,
+			'max_age' => 150
+		);
+		Symphony::Database()->insert($fields, self::TBL_NAME, true);
 	}
 
 	public function appendPreferences($context){
