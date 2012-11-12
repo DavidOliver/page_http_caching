@@ -59,14 +59,13 @@ class Extension_HTTP_Caching extends Extension{
 	}
 
 	public function savePageSettings($context){
-
-		$fields = array(
+		$settings = array(
 			'page_id' => $context['page_id'],
-			'caching' => 0,
-			'intermediary' => 0,
-			'max_age' => 150
+			'caching' => $_POST['http_caching']['caching'],
+			'intermediary' => $_POST['http_caching']['intermediary'],
+			'max_age' => $_POST['http_caching']['max_age']
 		);
-		Symphony::Database()->insert($fields, self::TBL_NAME, true);
+		Symphony::Database()->insert($settings, self::TBL_NAME, true);
 	}
 
 	public function appendPreferences($context){
@@ -131,7 +130,7 @@ class Extension_HTTP_Caching extends Extension{
 			'style'=>'padding-left:0!important;'
 		)));
 
-		$input = Widget::Input('settings[http_caching][caching]', 'default', 'radio');
+		$input = Widget::Input('http_caching[caching]', 'default', 'radio');
 		$label = Widget::Label(null, $input, null, null, array(
 			'title'=>'Use default setting in Preferences',
 			'style'=>'display:inline-block; clear:none; margin-right:2em;'
@@ -139,7 +138,7 @@ class Extension_HTTP_Caching extends Extension{
 		$label->setValue(__('Default'), false);
 		$fieldset->appendChild($label);
 
-		$input = Widget::Input('settings[http_caching][caching]', 'off', 'radio');
+		$input = Widget::Input('http_caching[caching]', 'off', 'radio');
 		$label = Widget::Label(null, $input, null, null, array(
 			'title'=>'Normal Symphony CMS behaviour',
 			'style'=>'display:inline-block; clear:none; margin-right:2em;'
@@ -147,7 +146,7 @@ class Extension_HTTP_Caching extends Extension{
 		$label->setValue(__('Off'), false);
 		$fieldset->appendChild($label);
 
-		$input = Widget::Input('settings[http_caching][caching]', 'on', 'radio');
+		$input = Widget::Input('http_caching[caching]', 'on', 'radio');
 		$label = Widget::Label(null, $input, null, null, array(
 			'style'=>'display:inline-block; clear:none; margin-right:2em;'
 		));
@@ -165,21 +164,21 @@ class Extension_HTTP_Caching extends Extension{
 			'style'=>'padding-left:0!important;'
 		)));
 
-		$input = Widget::Input('settings[http_caching][intermediary]', 'default', 'radio');
+		$input = Widget::Input('http_caching[intermediary]', 'default', 'radio');
 		$label = Widget::Label(null, $input, null, null, array(
 			'style'=>'display:inline-block; clear:none; margin-right:2em;'
 		));
 		$label->setValue(__('Default'), false);
 		$fieldset->appendChild($label);
 
-		$input = Widget::Input('settings[http_caching][intermediary]', 'no', 'radio');
+		$input = Widget::Input('http_caching[intermediary]', 'no', 'radio');
 		$label = Widget::Label(null, $input, null, null, array(
 			'style'=>'display:inline-block; clear:none; margin-right:2em;'
 		));
 		$label->setValue(__('No'), false);
 		$fieldset->appendChild($label);
 
-		$input = Widget::Input('settings[http_caching][intermediary]', 'yes', 'radio');
+		$input = Widget::Input('http_caching[intermediary]', 'yes', 'radio');
 		$label = Widget::Label(null, $input, null, null, array(
 			'style'=>'display:inline-block; clear:none; margin-right:2em;'
 		));
@@ -188,8 +187,8 @@ class Extension_HTTP_Caching extends Extension{
 
 		$group->appendChild($fieldset);
 
-		// Default max-age
-		$input = Widget::Input('settings[http_caching][default_max_age]');
+		// max-age
+		$input = Widget::Input('http_caching[max_age]');
 		$label = Widget::Label('max-age (seconds; if empty, default setting in Preferences will be used)', $input, 'seconds', null, array(
 			'style'=>'clear:both;'
 		));
