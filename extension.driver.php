@@ -59,13 +59,14 @@ class Extension_HTTP_Caching extends Extension{
 	}
 
 	public function savePageSettings($context){
-		$settings = array(
+		$settings_in = $_POST['http_caching'];
+		$settings_out = array(
 			'page_id'       => $context['page_id'],
-			'caching'       => $_POST['http_caching']['caching'],
-			'intermediary'  => $_POST['http_caching']['intermediary'],
-			'max_age'       => $_POST['http_caching']['max_age']
+			'caching'       => $settings_in['caching'],
+			'intermediary'  => $settings_in['intermediary'],
+			'max_age'       => $settings_in['max_age']
 		);
-		Symphony::Database()->insert($settings, self::TBL_NAME, true);
+		Symphony::Database()->insert($settings_out, self::TBL_NAME, true);
 	}
 
 	public function appendPreferences($context){
