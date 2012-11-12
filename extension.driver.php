@@ -47,8 +47,18 @@ class Extension_HTTP_Caching extends Extension{
 			),
 			array(
 				'page'      => '/blueprints/pages/',
+				'delegate'  => 'PagePostCreate',
+				'callback'  => 'savePageSettings'
+			),
+			array(
+				'page'      => '/blueprints/pages/',
 				'delegate'  => 'PagePostEdit',
 				'callback'  => 'savePageSettings'
+			),
+			array(
+				'page'      => '/blueprints/pages/',
+				'delegate'  => 'PagePostDelete',
+				'callback'  => 'deletePageSettings'
 			),
 			array(
 				'page'      => '/frontend/',
@@ -67,6 +77,12 @@ class Extension_HTTP_Caching extends Extension{
 			'max_age'       => $settings_in['max_age']
 		);
 		Symphony::Database()->insert($settings_out, self::TBL_NAME, true);
+	}
+
+	public function deletePageSettings($context){
+		foreach ($context['page_ids'] as $page_id) {
+			Symphony::Database()->delete(self::TBL_NAME, sprintf("`page_id` = %d", $page_id));
+		}
 	}
 
 	public function appendPreferences($context){
