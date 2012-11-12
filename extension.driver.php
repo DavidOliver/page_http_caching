@@ -85,6 +85,27 @@ class Extension_HTTP_Caching extends Extension{
 		}
 	}
 
+	private function getPageSettings($page_id){
+
+		/*
+			$result['caching'])
+			$result['intermediary'])
+			$result['max_age'])
+		*/
+
+		/*if (!is_int($page_id)) {
+			trigger_error('getPageSettings expected Argument 1 to be Integer', E_USER_WARNING);
+		}*/
+
+		$result = Symphony::Database()->fetch(
+			sprintf(
+				'SELECT * FROM ' . self::TBL_NAME . ' WHERE `page_id` = %d',
+				$page_id
+			)
+		);
+		return $result[0];
+	}
+
 	public function appendPreferences($context){
 		$group = new XMLElement('fieldset');
 		$group->setAttribute('class', 'settings');
@@ -134,78 +155,65 @@ class Extension_HTTP_Caching extends Extension{
 	}
 
 	public function appendPageSettings($context){
-		$group = new XMLElement('fieldset', null, array('class' => 'settings two columns'));
+		$page_id = $context['fields']['id'];
+		$page_settings = $this->getPageSettings($page_id);
+
+		$attr_checked = array('checked' => 'checked');
+		${checked_caching_.$page_settings['caching']} = $attr_checked;
+		${checked_intermediary_.$page_settings['intermediary']} = $attr_checked;
+
+		$group = new XMLElement('fieldset', null, array('class' => 'settings'));
 		
 		$group->appendChild(new XMLElement('legend', __('Page HTTP Caching')));
 
 		// HTTP caching
-		$fieldset = new XMLElement('fieldset', null, array(
-			'class'=>'column',
-			'style'=>'border-top:none; padding-left:0;'
-		));
-		$fieldset->appendChild(new XMLElement('legend', __('HTTP caching'), array(
-			'style'=>'padding-left:0!important;'
-		)));
+		$fieldset = new XMLElement('fieldset');
+		$fieldset->appendChild(new XMLElement('legend', __('HTTP caching')));
 
-		$input = Widget::Input('http_caching[caching]', 'default', 'radio');
+		$input = Widget::Input('http_caching[caching]', 'default', 'radio', $checked_caching_default);
 		$label = Widget::Label(null, $input, null, null, array(
-			'title'=>'Use default setting in Preferences',
-			'style'=>'display:inline-block; clear:none; margin-right:2em;'
+			'title'=>'Use default setting in Preferences'
 		));
 		$label->setValue(__('Default'), false);
 		$fieldset->appendChild($label);
 
-		$input = Widget::Input('http_caching[caching]', 'off', 'radio');
+		$input = Widget::Input('http_caching[caching]', 'off', 'radio', $checked_caching_off);
 		$label = Widget::Label(null, $input, null, null, array(
-			'title'=>'Normal Symphony CMS behaviour',
-			'style'=>'display:inline-block; clear:none; margin-right:2em;'
+			'title'=>'Normal Symphony CMS behaviour'
 		));
 		$label->setValue(__('Off'), false);
 		$fieldset->appendChild($label);
 
-		$input = Widget::Input('http_caching[caching]', 'on', 'radio');
-		$label = Widget::Label(null, $input, null, null, array(
-			'style'=>'display:inline-block; clear:none; margin-right:2em;'
-		));
+		$input = Widget::Input('http_caching[caching]', 'on', 'radio', $checked_caching_on);
+		$label = Widget::Label(null, $input);
 		$label->setValue(__('On'), false);
 		$fieldset->appendChild($label);
 
 		$group->appendChild($fieldset);
 
 		// Intermediary
-		$fieldset = new XMLElement('fieldset', null, array(
-			'class'=>'column',
-			'style'=>'border-top:none; padding-left:0;'
-		));
-		$fieldset->appendChild(new XMLElement('legend', __('Intermediary caches such as web proxies allowed'), array(
-			'style'=>'padding-left:0!important;'
-		)));
+		$fieldset = new XMLElement('fieldset');
+		$fieldset->appendChild(new XMLElement('legend', __('Intermediary caches such as web proxies allowed')));
 
-		$input = Widget::Input('http_caching[intermediary]', 'default', 'radio');
-		$label = Widget::Label(null, $input, null, null, array(
-			'style'=>'display:inline-block; clear:none; margin-right:2em;'
-		));
+		$input = Widget::Input('http_caching[intermediary]', 'default', 'radio', $checked_intermediary_default);
+		$label = Widget::Label(null, $input);
 		$label->setValue(__('Default'), false);
 		$fieldset->appendChild($label);
 
-		$input = Widget::Input('http_caching[intermediary]', 'no', 'radio');
-		$label = Widget::Label(null, $input, null, null, array(
-			'style'=>'display:inline-block; clear:none; margin-right:2em;'
-		));
+		$input = Widget::Input('http_caching[intermediary]', 'no', 'radio', $checked_intermediary_no);
+		$label = Widget::Label(null, $input);
 		$label->setValue(__('No'), false);
 		$fieldset->appendChild($label);
 
-		$input = Widget::Input('http_caching[intermediary]', 'yes', 'radio');
-		$label = Widget::Label(null, $input, null, null, array(
-			'style'=>'display:inline-block; clear:none; margin-right:2em;'
-		));
+		$input = Widget::Input('http_caching[intermediary]', 'yes', 'radio', $checked_intermediary_yes);
+		$label = Widget::Label(null, $input);
 		$label->setValue(__('Yes'), false);
 		$fieldset->appendChild($label);
 
 		$group->appendChild($fieldset);
 
 		// max-age
-		$input = Widget::Input('http_caching[max_age]');
+		$input = Widget::Input('http_caching[max_age]', $page_settings['max_age']);
 		$label = Widget::Label('max-age (seconds; if empty, default setting in Preferences will be used)', $input, 'seconds', null, array(
 			'style'=>'clear:both;'
 		));
@@ -215,6 +223,8 @@ class Extension_HTTP_Caching extends Extension{
 	}
 
 	public function updateHeaders(){
+		// Remember that a page may not have a settings row in our table
+		// Also allow for Symphony config file not having our settings in it
 
 		$config = Symphony::Configuration()->get('http_caching');
 
