@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension id="http_caching" status="experimental" xmlns="http://symphony-cms.com/schemas/extension/1.0">
+	<name>HTTP Caching</name>
+	<description></description>
+	<repo type="github">https://github.com/DavidOliver/</repo>
+	<!-- <url type="discuss"></url> -->
+	<authors>
+		<author>
+			<name github="DavidOliver" symphony="DavidOliver">David Oliver</name>
+			<website>http://doliver.co.uk/</website>
+		</author>
+	</authors>
+	<releases>
+		<release version="0.1" date="2012-11-04" min="2.3"></release>
+	</releases>
+</extension>
