@@ -40,6 +40,11 @@ class Extension_HTTP_Caching extends Extension{
 				'delegate'  => 'AddCustomPreferenceFieldsets',
 				'callback'  => 'appendPreferences'
 			),
+			/*array(
+				'page'      => '/system/preferences/',
+				'delegate'  => 'Save',
+				'callback'  => 'validatePreferences'
+			),*/
 			array(
 				'page'      => '/blueprints/pages/',
 				'delegate'  => 'AppendPageContent',
@@ -68,45 +73,13 @@ class Extension_HTTP_Caching extends Extension{
 		);
 	}
 
-	public function savePageSettings($context){
-		$settings_in = $_POST['http_caching'];
-		$settings_out = array(
-			'page_id'       => $context['page_id'],
-			'caching'       => $settings_in['caching'],
-			'intermediary'  => $settings_in['intermediary'],
-			'max_age'       => $settings_in['max_age']
-		);
-		Symphony::Database()->insert($settings_out, self::TBL_NAME, true);
-	}
-
-	public function deletePageSettings($context){
-		foreach ($context['page_ids'] as $page_id) {
-			Symphony::Database()->delete(self::TBL_NAME, sprintf("`page_id` = %d", $page_id));
-		}
-	}
-
-	private function getPageSettings($page_id){
-
-		/*
-			$result['caching'])
-			$result['intermediary'])
-			$result['max_age'])
-		*/
-
-		/*if (!is_int($page_id)) {
-			trigger_error('getPageSettings expected Argument 1 to be Integer', E_USER_WARNING);
-		}*/
-
-		$result = Symphony::Database()->fetch(
-			sprintf(
-				'SELECT * FROM ' . self::TBL_NAME . ' WHERE `page_id` = %d',
-				$page_id
-			)
-		);
-		return $result[0];
-	}
-
 	public function appendPreferences($context){
+		$config = Symphony::Configuration()->get('http_caching');
+
+		$attr_checked = array('checked' => 'checked');
+		${checked_caching_.$config['default_caching']} = $attr_checked;
+		${checked_intermediary_.$config['default_intermediary']} = $attr_checked;
+
 		$group = new XMLElement('fieldset');
 		$group->setAttribute('class', 'settings');
 
@@ -118,12 +91,12 @@ class Extension_HTTP_Caching extends Extension{
 		$fieldset = new XMLElement('fieldset');
 		$fieldset->appendChild(new XMLElement('legend', __('Default: frontend page HTTP caching')));
 
-		$input = Widget::Input('settings[http_caching][default_caching]', 'off', 'radio');
+		$input = Widget::Input('settings[http_caching][default_caching]', 'off', 'radio', $checked_caching_off);
 		$label = Widget::Label(null, $input, null, null, array('title'=>'Normal Symphony CMS behaviour'));
 		$label->setValue(__('Off'), false);
 		$fieldset->appendChild($label);
 
-		$input = Widget::Input('settings[http_caching][default_caching]', 'on', 'radio');
+		$input = Widget::Input('settings[http_caching][default_caching]', 'on', 'radio', $checked_caching_on);
 		$label = Widget::Label(null, $input);
 		$label->setValue(__('On'), false);
 		$fieldset->appendChild($label);
@@ -134,12 +107,12 @@ class Extension_HTTP_Caching extends Extension{
 		$fieldset = new XMLElement('fieldset');
 		$fieldset->appendChild(new XMLElement('legend', __('Default: intermediary caches such as web proxies allowed')));
 
-		$input = Widget::Input('settings[http_caching][default_intermediary]', 'no', 'radio');
+		$input = Widget::Input('settings[http_caching][default_intermediary]', 'no', 'radio', $checked_intermediary_no);
 		$label = Widget::Label(null, $input);
 		$label->setValue(__('No'), false);
 		$fieldset->appendChild($label);
 
-		$input = Widget::Input('settings[http_caching][default_intermediary]', 'yes', 'radio');
+		$input = Widget::Input('settings[http_caching][default_intermediary]', 'yes', 'radio', $checked_intermediary_yes);
 		$label = Widget::Label(null, $input);
 		$label->setValue(__('Yes'), false);
 		$fieldset->appendChild($label);
@@ -147,7 +120,7 @@ class Extension_HTTP_Caching extends Extension{
 		$group->appendChild($fieldset);
 
 		// Default max-age
-		$input = Widget::Input('settings[http_caching][default_max_age]');
+		$input = Widget::Input('settings[http_caching][default_max_age]', $config['default_max_age']);
 		$label = Widget::Label(__('Default: max-age (seconds)'), $input, 'seconds');
 		$group->appendChild($label);
 
@@ -216,12 +189,98 @@ class Extension_HTTP_Caching extends Extension{
 		$context['form']->appendChild($group);
 	}
 
+	private function validatePreferences($context){
+		// to be continued
+		/*
+		$preferences = $context['settings']['http_caching'];
+
+		if ( // does this do what's intended?
+			!is_null($preferences['default_caching']) &&
+			!is_null($preferences['intermediary']) &&
+			!is_null($preferences['max_age'])
+		){
+			return false; // return specific error message?
+		}
+
+		if (
+			($preferences['default_caching'] != 'off') &&
+			($preferences['default_caching'] != 'on')
+		){
+			return false; // return specific error message?
+		}
+
+		if (
+			($preferences['default_intermediary'] != 'no') &&
+			($preferences['default_intermediary'] != 'yes')
+		){
+			return false; // return specific error message?
+		}
+
+		if (!ctype_digit($preferences['default_max_age'])){
+			return false; // return specific error message?
+		}
+
+		return true;
+		*/
+	}
+
+	public function savePageSettings($context){
+		$settings_in = $_POST['http_caching'];
+		$settings_out = array(
+			'page_id'       => $context['page_id'],
+			'caching'       => $settings_in['caching'],
+			'intermediary'  => $settings_in['intermediary'],
+			'max_age'       => $settings_in['max_age']
+		);
+		Symphony::Database()->insert($settings_out, self::TBL_NAME, true);
+	}
+
+	public function deletePageSettings($context){
+		foreach ($context['page_ids'] as $page_id){
+			Symphony::Database()->delete(self::TBL_NAME, sprintf("`page_id` = %d", $page_id));
+		}
+	}
+
+	private function getPageSettings($page_id){
+
+		/*
+			$result['caching'])
+			$result['intermediary'])
+			$result['max_age'])
+		*/
+
+		/*if (!is_int($page_id)) {
+			trigger_error('getPageSettings expected Argument 1 to be Integer', E_USER_WARNING);
+		}*/
+
+		$result = Symphony::Database()->fetch(
+			sprintf(
+				'SELECT * FROM ' . self::TBL_NAME . ' WHERE `page_id` = %d',
+				$page_id
+			)
+		);
+		return $result[0];
+	}
+
 	public function updateHeaders(){
 		// Remember that a page may not have a settings row in our table
 		// Also allow for Symphony config file not having our settings in it
 
 		$config = Symphony::Configuration()->get('http_caching');
 
+		if ($config['default_caching'] && $config['default_intermediary'] && $config['default_max_age']) {
+
+
+
+
+
+		} else {
+
+			return false;
+
+		}
+
+		/*
 		if ($config['default_caching'] == 'on') {
 
 			$type = ($config['default_intermediary'] == 'yes') ? 'public' : 'private';
@@ -240,10 +299,10 @@ class Extension_HTTP_Caching extends Extension{
 			Frontend::Page()->addHeaderToPage('Expires', '');
 			Frontend::Page()->addHeaderToPage('Last-Modified', '');
 			Frontend::Page()->addHeaderToPage('Pragma', '');
-			*/
 
 			Frontend::Page()->addHeaderToPage('Cache-Control', $type . ', max-age=' . $max_age);
 		}
+		*/
 
 	}
 	
