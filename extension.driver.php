@@ -176,8 +176,7 @@ class Extension_HTTP_Caching extends Extension{
 		$fieldset->appendChild($label);
 
 		$input = Widget::Input('http_caching[caching]', 'off', 'radio', $checked_caching_off);
-		$label = Widget::Label(null, $input, null, null, array('title'=>'Normal Symphony CMS behaviour'
-		));
+		$label = Widget::Label(null, $input, null, null, array('title'=>'Normal Symphony CMS behaviour'));
 		$label->setValue(__('Off'), false);
 		$fieldset->appendChild($label);
 
