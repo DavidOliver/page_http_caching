@@ -64,6 +64,11 @@ class Extension_HTTP_Caching extends Extension {
 				'callback'  => 'deletePageSettings'
 			),
 			array(
+				'page'      => '/backend/',
+				'delegate'  => 'InitaliseAdminPageHead',
+				'callback'  => 'addCSS'
+			),
+			array(
 				'page'      => '/frontend/',
 				'delegate'  => 'FrontendPreRenderHeaders',
 				'callback'  => 'updateHeaders'
@@ -78,15 +83,14 @@ class Extension_HTTP_Caching extends Extension {
 		${checked_caching_.$config['default_caching']} = $attr_checked;
 		${checked_intermediary_.$config['default_intermediary']} = $attr_checked;
 
-		$group = new XMLElement('fieldset');
-		$group->setAttribute('class', 'settings');
+		$group = new XMLElement('fieldset', null, array('class' => 'settings http_caching'));
 
 		$group->appendChild(new XMLElement('legend', __('HTTP Caching')));
 
 		//$group->appendChild(new XMLElement('p', __('A paragraph for short intructions.'), array('class' => 'help')));
 
 		// default HTTP cache header
-		$fieldset = new XMLElement('fieldset');
+		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
 		$fieldset->appendChild(new XMLElement('legend', __('Default: frontend page HTTP caching')));
 
 		$input = Widget::Input('settings[http_caching][default_caching]', 'off', 'radio', $checked_caching_off);
@@ -102,7 +106,7 @@ class Extension_HTTP_Caching extends Extension {
 		$group->appendChild($fieldset);
 
 		// default intermediary
-		$fieldset = new XMLElement('fieldset');
+		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
 		$fieldset->appendChild(new XMLElement('legend', __('Default: intermediary caches such as web proxies allowed')));
 
 		$input = Widget::Input('settings[http_caching][default_intermediary]', 'no', 'radio', $checked_intermediary_no);
@@ -133,12 +137,12 @@ class Extension_HTTP_Caching extends Extension {
 		${checked_caching_.$page_settings['caching']} = $attr_checked;
 		${checked_intermediary_.$page_settings['intermediary']} = $attr_checked;
 
-		$group = new XMLElement('fieldset', null, array('class' => 'settings'));
+		$group = new XMLElement('fieldset', null, array('class' => 'settings http_caching'));
 		
 		$group->appendChild(new XMLElement('legend', __('Page HTTP Caching')));
 
 		// HTTP cache header
-		$fieldset = new XMLElement('fieldset');
+		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
 		$fieldset->appendChild(new XMLElement('legend', __('HTTP caching')));
 
 		$input = Widget::Input('http_caching[caching]', 'default', 'radio', $checked_caching_default);
@@ -159,7 +163,7 @@ class Extension_HTTP_Caching extends Extension {
 		$group->appendChild($fieldset);
 
 		// intermediary
-		$fieldset = new XMLElement('fieldset');
+		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
 		$fieldset->appendChild(new XMLElement('legend', __('Intermediary caches such as web proxies allowed')));
 
 		$input = Widget::Input('http_caching[intermediary]', 'default', 'radio', $checked_intermediary_default);
@@ -249,11 +253,17 @@ class Extension_HTTP_Caching extends Extension {
 		return $result[0];
 	}
 
+	public function addCSS($context) {
+		Administration::instance()->Page->addStylesheetToHead(URL.'/extensions/http_caching/assets/style.css');
+	}
+
 	public function updateHeaders() {
+		$page_params = Frontend::instance()->Page()->Params();
 
 		// search for page settings
-		$page_data = Frontend::Page()->pageData();
-		$page_settings = $this->getPageSettings($page_data['id']);
+		//$page_data = Frontend::Page()->pageData();
+		//$page_settings = $this->getPageSettings($page_data['id']);
+		$page_settings = $this->getPageSettings($page_params['current-page-id']);
 
 		$config = Symphony::Configuration()->get('http_caching');
 		
@@ -285,16 +295,17 @@ class Extension_HTTP_Caching extends Extension {
 		}
 
 		// remove unwanted/unnecessary headers
-		// Symphony 2.3.2+
-		Frontend::Page()->removeHeaderFromPage('Expires');
-		Frontend::Page()->removeHeaderFromPage('Last-Modified');
-		Frontend::Page()->removeHeaderFromPage('Pragma');
-		/*
-		// Symphony 2.3 - 2.3.1
-		Frontend::Page()->addHeaderToPage('Expires', '');
-		Frontend::Page()->addHeaderToPage('Last-Modified', '');
-		Frontend::Page()->addHeaderToPage('Pragma', '');
-		*/
+		if (version_compare($page_params['symphony-version'], '2.3.2', '<')) {
+			// Symphony CMS 2.3 - 2.3.1: set the unwanted header values to be blank
+			Frontend::Page()->addHeaderToPage('Expires', '');
+			Frontend::Page()->addHeaderToPage('Last-Modified', '');
+			Frontend::Page()->addHeaderToPage('Pragma', '');
+		} else {
+			// Symphony CMS 2.3.2+: completely remove headers with new removeHeaderFromPage method
+			Frontend::Page()->removeHeaderFromPage('Expires');
+			Frontend::Page()->removeHeaderFromPage('Last-Modified');
+			Frontend::Page()->removeHeaderFromPage('Pragma');
+		}
 
 		// add HTTP cache header
 		Frontend::Page()->addHeaderToPage(

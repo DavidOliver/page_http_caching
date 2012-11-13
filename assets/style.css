@@ -1,0 +1,18 @@
+fieldset.http_caching fieldset {
+	border-top: 0;
+}
+
+fieldset.http_caching fieldset legend {
+	line-height: 1;
+}
+
+fieldset.inline-options label {
+	display: inline-block;
+	margin-right: 20px;
+}
+
+fieldset.inline-options label input[type=radio] {
+	margin-right: 0;
+	position: relative;
+	top: 3px;
+}
