@@ -81,10 +81,12 @@ class Extension_HTTP_Caching extends Extension {
 	public function appendPreferences($context) {
 		$config = Symphony::Configuration()->get(self::NAME);
 
+		// setting checked arrays in order to preselect radio buttons as appropriate
 		$attr_checked = array('checked' => 'checked');
 		${checked_caching_.$config['default_caching']} = $attr_checked;
 		${checked_intermediary_.$config['default_intermediary']} = $attr_checked;
 
+		// form elements
 		$group = new XMLElement('fieldset', null, array('class' => 'settings ' . self::NAME));
 
 		$group->appendChild(new XMLElement('legend', __(self::FULL_NAME)));
@@ -135,10 +137,22 @@ class Extension_HTTP_Caching extends Extension {
 		$page_id = $context['fields']['id'];
 		$page_settings = $this->getPageSettings($page_id);
 
+		// setting checked arrays in order to preselect radio buttons as appropriate
 		$attr_checked = array('checked' => 'checked');
-		${checked_caching_.$page_settings['caching']} = $attr_checked;
-		${checked_intermediary_.$page_settings['intermediary']} = $attr_checked;
 
+		if (empty($page_settings['caching'])) {
+			$checked_caching_default = $attr_checked;
+		} else {
+			${checked_caching_.$page_settings['caching']} = $attr_checked;
+		}
+
+		if (empty($page_settings['intermediary'])) {
+			$checked_intermediary_default = $attr_checked;
+		} else {
+			${checked_intermediary_.$page_settings['intermediary']} = $attr_checked;
+		}
+
+		// form elements
 		$group = new XMLElement('fieldset', null, array('class' => 'settings ' . self::NAME));
 		
 		$group->appendChild(new XMLElement('legend', __('Page HTTP Caching')));
