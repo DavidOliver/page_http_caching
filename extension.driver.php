@@ -85,7 +85,7 @@ class Extension_HTTP_Caching extends Extension {
 
 		//$group->appendChild(new XMLElement('p', __('A paragraph for short intructions.'), array('class' => 'help')));
 
-		// Default behaviour
+		// default HTTP cache header
 		$fieldset = new XMLElement('fieldset');
 		$fieldset->appendChild(new XMLElement('legend', __('Default: frontend page HTTP caching')));
 
@@ -101,7 +101,7 @@ class Extension_HTTP_Caching extends Extension {
 
 		$group->appendChild($fieldset);
 
-		// Default intermediary
+		// default intermediary
 		$fieldset = new XMLElement('fieldset');
 		$fieldset->appendChild(new XMLElement('legend', __('Default: intermediary caches such as web proxies allowed')));
 
@@ -137,7 +137,7 @@ class Extension_HTTP_Caching extends Extension {
 		
 		$group->appendChild(new XMLElement('legend', __('Page HTTP Caching')));
 
-		// HTTP caching
+		// HTTP cache header
 		$fieldset = new XMLElement('fieldset');
 		$fieldset->appendChild(new XMLElement('legend', __('HTTP caching')));
 
@@ -158,7 +158,7 @@ class Extension_HTTP_Caching extends Extension {
 
 		$group->appendChild($fieldset);
 
-		// Intermediary
+		// intermediary
 		$fieldset = new XMLElement('fieldset');
 		$fieldset->appendChild(new XMLElement('legend', __('Intermediary caches such as web proxies allowed')));
 
@@ -188,7 +188,7 @@ class Extension_HTTP_Caching extends Extension {
 	}
 
 	private function validatePreferences($context) {
-		// to be continued
+		// @TODO: validate preferences function
 		/*
 		$preferences = $context['settings']['http_caching'];
 
@@ -240,17 +240,6 @@ class Extension_HTTP_Caching extends Extension {
 	}
 
 	private function getPageSettings($page_id) {
-
-		/*
-			$result['caching'])
-			$result['intermediary'])
-			$result['max_age'])
-		*/
-
-		/*if (!is_int($page_id)) {
-			trigger_error('getPageSettings expected Argument 1 to be Integer', E_USER_WARNING);
-		}*/
-
 		$result = Symphony::Database()->fetch(
 			sprintf(
 				'SELECT * FROM ' . self::TBL_NAME . ' WHERE `page_id` = %d',
@@ -261,32 +250,12 @@ class Extension_HTTP_Caching extends Extension {
 	}
 
 	public function updateHeaders() {
-		// Remember that a page may not have a settings row in our table
-		// Also allow for Symphony config file not having our settings in it
 
 		// search for page settings
 		$page_data = Frontend::Page()->pageData();
 		$page_settings = $this->getPageSettings($page_data['id']);
-		//echo"<pre>";print_r($page_settings);echo"</pre>";
 
 		$config = Symphony::Configuration()->get('http_caching');
-		//echo"<pre>";print_r($config);echo"</pre>";
-
-		/*
-		$load_config = false;
-		if (empty($page_settings)) {
-			echo "need to load config";
-			$load_config = true;
-		} elseif (in_array('default', $page_settings) || empty($page_settings['max_age'])) {
-			echo "need to load config";
-			$load_config = true;
-		} else {
-			echo "don't need to load config";
-		}
-		if ($load_config == true) {
-			$config = Symphony::Configuration()->get('http_caching');
-		}
-		*/
 		
 		// @TODO: validate preferences
 
