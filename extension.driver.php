@@ -148,7 +148,7 @@ class Extension_HTTP_Caching extends Extension{
 
 		// Default max-age
 		$input = Widget::Input('settings[http_caching][default_max_age]');
-		$label = Widget::Label('Default: max-age (seconds)', $input, 'seconds');
+		$label = Widget::Label(__('Default: max-age (seconds)'), $input, 'seconds');
 		$group->appendChild($label);
 
 		$context['wrapper']->appendChild($group);
@@ -171,15 +171,12 @@ class Extension_HTTP_Caching extends Extension{
 		$fieldset->appendChild(new XMLElement('legend', __('HTTP caching')));
 
 		$input = Widget::Input('http_caching[caching]', 'default', 'radio', $checked_caching_default);
-		$label = Widget::Label(null, $input, null, null, array(
-			'title'=>'Use default setting in Preferences'
-		));
+		$label = Widget::Label(null, $input, null, null, array('title'=>'Use default setting in Preferences'));
 		$label->setValue(__('Default'), false);
 		$fieldset->appendChild($label);
 
 		$input = Widget::Input('http_caching[caching]', 'off', 'radio', $checked_caching_off);
-		$label = Widget::Label(null, $input, null, null, array(
-			'title'=>'Normal Symphony CMS behaviour'
+		$label = Widget::Label(null, $input, null, null, array('title'=>'Normal Symphony CMS behaviour'
 		));
 		$label->setValue(__('Off'), false);
 		$fieldset->appendChild($label);
@@ -214,9 +211,7 @@ class Extension_HTTP_Caching extends Extension{
 
 		// max-age
 		$input = Widget::Input('http_caching[max_age]', $page_settings['max_age']);
-		$label = Widget::Label('max-age (seconds; if empty, default setting in Preferences will be used)', $input, 'seconds', null, array(
-			'style'=>'clear:both;'
-		));
+		$label = Widget::Label(__('max-age (seconds; if empty, default setting in Preferences will be used)'), $input, 'seconds');
 		$group->appendChild($label);
 
 		$context['form']->appendChild($group);
