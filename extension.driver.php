@@ -1,7 +1,5 @@
 <?php
 
-require_once(TOOLKIT . '/class.mysql.php');
-
 class Extension_HTTP_Caching extends Extension{
 
 	const TBL_NAME = 'tbl_http_caching';
@@ -266,19 +264,35 @@ class Extension_HTTP_Caching extends Extension{
 		// Remember that a page may not have a settings row in our table
 		// Also allow for Symphony config file not having our settings in it
 
+		// search for page settings
+		$page_data = Frontend::Page()->pageData();
+		$page_settings = $this->getPageSettings($page_data['id']);
+		echo"<pre>";print_r($page_settings);echo"</pre>";
+
 		$config = Symphony::Configuration()->get('http_caching');
+		echo"<pre>";print_r($config);echo"</pre>";
 
-		if ($config['default_caching'] && $config['default_intermediary'] && $config['default_max_age']) {
-
-
-
-
-
+		/*
+		$load_config = false;
+		if (empty($page_settings)) {
+			echo "need to load config";
+			$load_config = true;
+		} elseif (in_array('default', $page_settings) || empty($page_settings['max_age'])) {
+			echo "need to load config";
+			$load_config = true;
 		} else {
-
-			return false;
-
+			echo "don't need to load config";
 		}
+		if ($load_config == true) {
+			$config = Symphony::Configuration()->get('http_caching');
+		}
+		*/
+
+		
+		// @TODO: validate preferences!
+
+		// if page settings exist
+		
 
 		/*
 		if ($config['default_caching'] == 'on') {
@@ -307,5 +321,3 @@ class Extension_HTTP_Caching extends Extension{
 	}
 	
 }
-
-?>
