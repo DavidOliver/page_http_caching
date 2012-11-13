@@ -1,10 +1,10 @@
 <?php
 
-class Extension_HTTP_Caching extends Extension{
+class Extension_HTTP_Caching extends Extension {
 
 	const TBL_NAME = 'tbl_http_caching';
 
-	public function install(){
+	public function install() {
 		Symphony::Database()->query(
 			'CREATE TABLE `' . self::TBL_NAME . '` (
 				`page_id` INT(11) unsigned NOT NULL,
@@ -25,13 +25,13 @@ class Extension_HTTP_Caching extends Extension{
 		Symphony::Configuration()->write();
 	}
 
-	public function uninstall(){
+	public function uninstall() {
 		Symphony::Configuration()->remove('http_caching');
 		Symphony::Configuration()->write();
 		Symphony::Database()->query('DROP TABLE `' . self::TBL_NAME . '`');
 	}
 	
-	public function getSubscribedDelegates(){
+	public function getSubscribedDelegates() {
 		return array(
 			array(
 				'page'      => '/system/preferences/',
@@ -71,7 +71,7 @@ class Extension_HTTP_Caching extends Extension{
 		);
 	}
 
-	public function appendPreferences($context){
+	public function appendPreferences($context) {
 		$config = Symphony::Configuration()->get('http_caching');
 
 		$attr_checked = array('checked' => 'checked');
@@ -125,7 +125,7 @@ class Extension_HTTP_Caching extends Extension{
 		$context['wrapper']->appendChild($group);
 	}
 
-	public function appendPageSettings($context){
+	public function appendPageSettings($context) {
 		$page_id = $context['fields']['id'];
 		$page_settings = $this->getPageSettings($page_id);
 
@@ -187,7 +187,7 @@ class Extension_HTTP_Caching extends Extension{
 		$context['form']->appendChild($group);
 	}
 
-	private function validatePreferences($context){
+	private function validatePreferences($context) {
 		// to be continued
 		/*
 		$preferences = $context['settings']['http_caching'];
@@ -222,7 +222,7 @@ class Extension_HTTP_Caching extends Extension{
 		*/
 	}
 
-	public function savePageSettings($context){
+	public function savePageSettings($context) {
 		$settings_in = $_POST['http_caching'];
 		$settings_out = array(
 			'page_id'       => $context['page_id'],
@@ -233,13 +233,13 @@ class Extension_HTTP_Caching extends Extension{
 		Symphony::Database()->insert($settings_out, self::TBL_NAME, true);
 	}
 
-	public function deletePageSettings($context){
-		foreach ($context['page_ids'] as $page_id){
+	public function deletePageSettings($context) {
+		foreach ($context['page_ids'] as $page_id) {
 			Symphony::Database()->delete(self::TBL_NAME, sprintf("`page_id` = %d", $page_id));
 		}
 	}
 
-	private function getPageSettings($page_id){
+	private function getPageSettings($page_id) {
 
 		/*
 			$result['caching'])
@@ -260,17 +260,17 @@ class Extension_HTTP_Caching extends Extension{
 		return $result[0];
 	}
 
-	public function updateHeaders(){
+	public function updateHeaders() {
 		// Remember that a page may not have a settings row in our table
 		// Also allow for Symphony config file not having our settings in it
 
 		// search for page settings
 		$page_data = Frontend::Page()->pageData();
 		$page_settings = $this->getPageSettings($page_data['id']);
-		echo"<pre>";print_r($page_settings);echo"</pre>";
+		//echo"<pre>";print_r($page_settings);echo"</pre>";
 
 		$config = Symphony::Configuration()->get('http_caching');
-		echo"<pre>";print_r($config);echo"</pre>";
+		//echo"<pre>";print_r($config);echo"</pre>";
 
 		/*
 		$load_config = false;
@@ -287,36 +287,51 @@ class Extension_HTTP_Caching extends Extension{
 			$config = Symphony::Configuration()->get('http_caching');
 		}
 		*/
-
 		
-		// @TODO: validate preferences!
+		// @TODO: validate preferences
 
-		// if page settings exist
-		
-
-		/*
-		if ($config['default_caching'] == 'on') {
-
-			$type = ($config['default_intermediary'] == 'yes') ? 'public' : 'private';
-
-			if ($config['default_max_age'] != '' && ctype_digit($config['default_max_age'])) {
-				$max_age = $config['default_max_age'];
-			} else {
-				return false;
-			}
-
-			// Remove unnecessary/unwanted headers
-			Frontend::Page()->removeHeaderFromPage('Expires');
-			Frontend::Page()->removeHeaderFromPage('Last-Modified');
-			Frontend::Page()->removeHeaderFromPage('Pragma');
-			/*
-			Frontend::Page()->addHeaderToPage('Expires', '');
-			Frontend::Page()->addHeaderToPage('Last-Modified', '');
-			Frontend::Page()->addHeaderToPage('Pragma', '');
-
-			Frontend::Page()->addHeaderToPage('Cache-Control', $type . ', max-age=' . $max_age);
+		// if HTTP caching is not desired
+		if (($page_settings['caching'] != 'on' && $config['default_caching'] != 'on') ||
+			($page_settings['caching'] == 'off')) {
+			return false;
 		}
+
+		// HTTP caching is desired
+		$http_caching = array();
+
+		if (!empty($page_settings['max_age'])) {
+			$http_caching['max_age'] = $page_settings['max_age'];
+		} elseif (!empty($config['default_max_age'])) {
+			$http_caching['max_age'] = $config['default_max_age'];
+		} else {
+			return false;
+		}
+
+		if ($page_settings['intermediary'] == 'yes') {
+			$http_caching['intermediary'] = 'public';
+		} elseif ($config['default_intermediary'] == 'yes') {
+			$http_caching['intermediary'] = 'public';
+		} else {
+			$http_caching['intermediary'] = 'private';
+		}
+
+		// remove unwanted/unnecessary headers
+		// Symphony 2.3.2+
+		Frontend::Page()->removeHeaderFromPage('Expires');
+		Frontend::Page()->removeHeaderFromPage('Last-Modified');
+		Frontend::Page()->removeHeaderFromPage('Pragma');
+		/*
+		// Symphony 2.3 - 2.3.1
+		Frontend::Page()->addHeaderToPage('Expires', '');
+		Frontend::Page()->addHeaderToPage('Last-Modified', '');
+		Frontend::Page()->addHeaderToPage('Pragma', '');
 		*/
+
+		// add HTTP cache header
+		Frontend::Page()->addHeaderToPage(
+			'Cache-Control',
+			$http_caching['intermediary'] . ', max-age=' . $http_caching['max_age']
+		);
 
 	}
 	
