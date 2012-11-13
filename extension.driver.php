@@ -2,6 +2,8 @@
 
 class Extension_HTTP_Caching extends Extension {
 
+	const FULL_NAME = 'HTTP Caching';
+	const NAME = 'http_caching';
 	const TBL_NAME = 'tbl_http_caching';
 
 	public function install() {
@@ -16,7 +18,7 @@ class Extension_HTTP_Caching extends Extension {
 		);
 
 		Symphony::Configuration()->setArray(array(
-			'http_caching' => array(
+			self::NAME => array(
 				'default_caching'       => 'off',
 				'default_intermediary'  => 'no',
 				'default_max_age'       => '60'
@@ -26,7 +28,7 @@ class Extension_HTTP_Caching extends Extension {
 	}
 
 	public function uninstall() {
-		Symphony::Configuration()->remove('http_caching');
+		Symphony::Configuration()->remove(self::NAME);
 		Symphony::Configuration()->write();
 		Symphony::Database()->query('DROP TABLE `' . self::TBL_NAME . '`');
 	}
@@ -77,15 +79,15 @@ class Extension_HTTP_Caching extends Extension {
 	}
 
 	public function appendPreferences($context) {
-		$config = Symphony::Configuration()->get('http_caching');
+		$config = Symphony::Configuration()->get(self::NAME);
 
 		$attr_checked = array('checked' => 'checked');
 		${checked_caching_.$config['default_caching']} = $attr_checked;
 		${checked_intermediary_.$config['default_intermediary']} = $attr_checked;
 
-		$group = new XMLElement('fieldset', null, array('class' => 'settings http_caching'));
+		$group = new XMLElement('fieldset', null, array('class' => 'settings ' . self::NAME));
 
-		$group->appendChild(new XMLElement('legend', __('HTTP Caching')));
+		$group->appendChild(new XMLElement('legend', __(self::FULL_NAME)));
 
 		//$group->appendChild(new XMLElement('p', __('A paragraph for short intructions.'), array('class' => 'help')));
 
@@ -93,12 +95,12 @@ class Extension_HTTP_Caching extends Extension {
 		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
 		$fieldset->appendChild(new XMLElement('legend', __('Default: frontend page HTTP caching')));
 
-		$input = Widget::Input('settings[http_caching][default_caching]', 'off', 'radio', $checked_caching_off);
+		$input = Widget::Input('settings['.self::NAME.'][default_caching]', 'off', 'radio', $checked_caching_off);
 		$label = Widget::Label(null, $input, null, null, array('title'=>'Normal Symphony CMS behaviour'));
 		$label->setValue(__('Off'), false);
 		$fieldset->appendChild($label);
 
-		$input = Widget::Input('settings[http_caching][default_caching]', 'on', 'radio', $checked_caching_on);
+		$input = Widget::Input('settings['.self::NAME.'][default_caching]', 'on', 'radio', $checked_caching_on);
 		$label = Widget::Label(null, $input);
 		$label->setValue(__('On'), false);
 		$fieldset->appendChild($label);
@@ -109,12 +111,12 @@ class Extension_HTTP_Caching extends Extension {
 		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
 		$fieldset->appendChild(new XMLElement('legend', __('Default: intermediary caches such as web proxies allowed')));
 
-		$input = Widget::Input('settings[http_caching][default_intermediary]', 'no', 'radio', $checked_intermediary_no);
+		$input = Widget::Input('settings['.self::NAME.'][default_intermediary]', 'no', 'radio', $checked_intermediary_no);
 		$label = Widget::Label(null, $input);
 		$label->setValue(__('No'), false);
 		$fieldset->appendChild($label);
 
-		$input = Widget::Input('settings[http_caching][default_intermediary]', 'yes', 'radio', $checked_intermediary_yes);
+		$input = Widget::Input('settings['.self::NAME.'][default_intermediary]', 'yes', 'radio', $checked_intermediary_yes);
 		$label = Widget::Label(null, $input);
 		$label->setValue(__('Yes'), false);
 		$fieldset->appendChild($label);
@@ -122,7 +124,7 @@ class Extension_HTTP_Caching extends Extension {
 		$group->appendChild($fieldset);
 
 		// Default max-age
-		$input = Widget::Input('settings[http_caching][default_max_age]', $config['default_max_age']);
+		$input = Widget::Input('settings['.self::NAME.'][default_max_age]', $config['default_max_age']);
 		$label = Widget::Label(__('Default: max-age (seconds)'), $input, 'seconds');
 		$group->appendChild($label);
 
@@ -137,7 +139,7 @@ class Extension_HTTP_Caching extends Extension {
 		${checked_caching_.$page_settings['caching']} = $attr_checked;
 		${checked_intermediary_.$page_settings['intermediary']} = $attr_checked;
 
-		$group = new XMLElement('fieldset', null, array('class' => 'settings http_caching'));
+		$group = new XMLElement('fieldset', null, array('class' => 'settings ' . self::NAME));
 		
 		$group->appendChild(new XMLElement('legend', __('Page HTTP Caching')));
 
@@ -145,17 +147,17 @@ class Extension_HTTP_Caching extends Extension {
 		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
 		$fieldset->appendChild(new XMLElement('legend', __('HTTP caching')));
 
-		$input = Widget::Input('http_caching[caching]', 'default', 'radio', $checked_caching_default);
+		$input = Widget::Input(''.self::NAME.'[caching]', 'default', 'radio', $checked_caching_default);
 		$label = Widget::Label(null, $input, null, null, array('title'=>'Use default setting in Preferences'));
 		$label->setValue(__('Default'), false);
 		$fieldset->appendChild($label);
 
-		$input = Widget::Input('http_caching[caching]', 'off', 'radio', $checked_caching_off);
+		$input = Widget::Input(''.self::NAME.'[caching]', 'off', 'radio', $checked_caching_off);
 		$label = Widget::Label(null, $input, null, null, array('title'=>'Normal Symphony CMS behaviour'));
 		$label->setValue(__('Off'), false);
 		$fieldset->appendChild($label);
 
-		$input = Widget::Input('http_caching[caching]', 'on', 'radio', $checked_caching_on);
+		$input = Widget::Input(''.self::NAME.'[caching]', 'on', 'radio', $checked_caching_on);
 		$label = Widget::Label(null, $input);
 		$label->setValue(__('On'), false);
 		$fieldset->appendChild($label);
@@ -166,17 +168,17 @@ class Extension_HTTP_Caching extends Extension {
 		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
 		$fieldset->appendChild(new XMLElement('legend', __('Intermediary caches such as web proxies allowed')));
 
-		$input = Widget::Input('http_caching[intermediary]', 'default', 'radio', $checked_intermediary_default);
+		$input = Widget::Input(''.self::NAME.'[intermediary]', 'default', 'radio', $checked_intermediary_default);
 		$label = Widget::Label(null, $input);
 		$label->setValue(__('Default'), false);
 		$fieldset->appendChild($label);
 
-		$input = Widget::Input('http_caching[intermediary]', 'no', 'radio', $checked_intermediary_no);
+		$input = Widget::Input(''.self::NAME.'[intermediary]', 'no', 'radio', $checked_intermediary_no);
 		$label = Widget::Label(null, $input);
 		$label->setValue(__('No'), false);
 		$fieldset->appendChild($label);
 
-		$input = Widget::Input('http_caching[intermediary]', 'yes', 'radio', $checked_intermediary_yes);
+		$input = Widget::Input(''.self::NAME.'[intermediary]', 'yes', 'radio', $checked_intermediary_yes);
 		$label = Widget::Label(null, $input);
 		$label->setValue(__('Yes'), false);
 		$fieldset->appendChild($label);
@@ -184,7 +186,7 @@ class Extension_HTTP_Caching extends Extension {
 		$group->appendChild($fieldset);
 
 		// max-age
-		$input = Widget::Input('http_caching[max_age]', $page_settings['max_age']);
+		$input = Widget::Input(''.self::NAME.'[max_age]', $page_settings['max_age']);
 		$label = Widget::Label(__('max-age (seconds; if empty, default setting in Preferences will be used)'), $input, 'seconds');
 		$group->appendChild($label);
 
@@ -194,7 +196,7 @@ class Extension_HTTP_Caching extends Extension {
 	private function validatePreferences($context) {
 		// @TODO: validate preferences function
 		/*
-		$preferences = $context['settings']['http_caching'];
+		$preferences = $context['settings'][self::NAME];
 
 		if ( // does this do what's intended?
 			!is_null($preferences['default_caching']) &&
@@ -227,7 +229,7 @@ class Extension_HTTP_Caching extends Extension {
 	}
 
 	public function savePageSettings($context) {
-		$settings_in = $_POST['http_caching'];
+		$settings_in = $_POST[self::NAME];
 		$settings_out = array(
 			'page_id'       => $context['page_id'],
 			'caching'       => $settings_in['caching'],
@@ -254,7 +256,7 @@ class Extension_HTTP_Caching extends Extension {
 	}
 
 	public function addCSS($context) {
-		Administration::instance()->Page->addStylesheetToHead(URL.'/extensions/http_caching/assets/style.css');
+		Administration::instance()->Page->addStylesheetToHead(URL.'/extensions/'.self::NAME.'/assets/style.css');
 	}
 
 	public function updateHeaders() {
@@ -265,7 +267,7 @@ class Extension_HTTP_Caching extends Extension {
 		//$page_settings = $this->getPageSettings($page_data['id']);
 		$page_settings = $this->getPageSettings($page_params['current-page-id']);
 
-		$config = Symphony::Configuration()->get('http_caching');
+		$config = Symphony::Configuration()->get(self::NAME);
 		
 		// @TODO: validate preferences
 
