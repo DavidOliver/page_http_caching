@@ -12,7 +12,7 @@ class Extension_HTTP_Caching extends Extension{
 				`page_id` INT(11) unsigned NOT NULL,
 				`caching` VARCHAR(7) NOT NULL,
 				`intermediary` VARCHAR(7) NOT NULL,
-				`max_age` INT unsigned NOT NULL,
+				`max_age` INT unsigned default NULL,
 				PRIMARY KEY (`page_id`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;'
 		);
