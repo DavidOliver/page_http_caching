@@ -8,6 +8,8 @@ Notes on when and when not to use HTTP cache headers for pages to come.
 
 ### Recommended reading
 
+[Symphony CMS: A guide to caching extensions](http://getsymphony.com/learn/articles/view/a-guide-to-caching-extensions/)
+
 [Caching Tutorial for Web Authors and Webmasters](http://www.mnot.net/cache_docs/)
 
 [Increasing Application Performance with HTTP Cache Headers](https://devcenter.heroku.com/articles/increasing-application-performance-with-http-cache-headers)
