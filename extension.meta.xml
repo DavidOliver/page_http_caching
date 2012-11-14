@@ -13,7 +13,7 @@
 		<release version="0.1" date="2012-11-14" min="2.3" max="2.3.2"></release>
 	</releases>
 	<types>
-		<type>Caching</type>
+		<type>Performance</type>
 	</types>
 	<media>
 		<item type="image" url="http://dl.dropbox.com/u/183085/symphonycms/extensions/page_http_caching.png">HTTP caching page settings</item>
