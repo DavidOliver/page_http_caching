@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<extension id="http_caching" status="experimental" xmlns="http://symphony-cms.com/schemas/extension/1.0">
-	<name>HTTP Caching</name>
-	<description></description>
-	<repo type="github">https://github.com/DavidOliver/</repo>
-	<!-- <url type="discuss"></url> -->
+<extension id="page_http_caching" status="experimental" xmlns="http://symphony-cms.com/schemas/extension/1.0">
+	<name>Page HTTP Caching</name>
+	<description>Control HTTP caching on a per-Symphony-page basis.</description>
+	<repo type="github">https://github.com/DavidOliver/page_http_caching</repo>
 	<authors>
 		<author>
 			<name github="DavidOliver" symphony="DavidOliver">David Oliver</name>
@@ -11,6 +10,12 @@
 		</author>
 	</authors>
 	<releases>
-		<release version="0.1" date="2012-11-04" min="2.3"></release>
+		<release version="0.1" date="2012-11-14" min="2.3"></release>
 	</releases>
+	<types>
+		<type>Caching</type>
+	</types>
+	<media>
+		<item type="image" url="http://dl.dropbox.com/u/183085/symphonycms/extensions/page_http_caching.png">HTTP caching page settings</item>
+	</media>
 </extension>
