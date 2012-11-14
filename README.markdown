@@ -2,11 +2,20 @@ Control HTTP cache headers on a per-Symphony-page basis.
 
 ## Guidelines and information
 
-Notes on Symphony CMS caching behaviour and options to come.
+The default Symphony CMS `Cache-Control` header values for frontend pages indicate that the web browser should rerequest pages from the origin server. This is a good default, and ensures that the most recent dynamic content is displayed on each page load.
 
-Notes on when and when not to use HTTP cache headers for pages to come.
+For websites with content that is not updated extremely frequently, it may be preferable to indicate that pages can be cached by web browsers and, optionally, by intermediary caches such as web proxies, for a certain length of time. Doing so will allow pages to be displayed without HTTP requests re-hitting the origin webserver, potentially saving valuable CPU and memory resources. Additionally, the time taken for pages to be displayed in-browser can be substantially decreased, resulting in more of instantaneous feel to the visitor.
+
+Page HTTP Caching enables HTTP caching by allowing control of:
+
+ * intermediary caches (`public` or `private`)
+ * `max-age` (in seconds)
+
+If the majority of a website’s pages include content that must be completely fresh, such as user login status, or content that is updated extremely frequently, Page HTTP Caching is likely not suitable.
 
 ### Recommended reading
+
+These articles are helpful in choosing caching methods and deciding on which HTTP cache settings to use.
 
 [Symphony CMS: A guide to caching extensions](http://getsymphony.com/learn/articles/view/a-guide-to-caching-extensions/)
 
@@ -18,7 +27,10 @@ Notes on when and when not to use HTTP cache headers for pages to come.
 
 ## Usage
 
+Once you have installed Page HTTP Caching, visit the Symphony CMS Preferences page and select the HTTP caching settings that your pages should use by default.
 
+If your content includes sensitive data such as user information, it is recommended not to enable intermediary caches.
 
-## Installation
+The `max-age` settings (in seconds) determines how long a browser may choose to serve a page from its cache instead of making an HTTP request. You will want to tailor this value to your website’s content and users.
 
+You may also control these same settings per-Symphony-page if required when editing pages.
