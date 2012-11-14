@@ -1,4 +1,4 @@
-Control HTTP Cache headers on a per-Symphony-page basis.
+Control HTTP cache headers on a per-Symphony-page basis.
 
 ## Guidelines and information
 
