@@ -2,11 +2,11 @@ Control HTTP cache headers on a per-Symphony-page basis.
 
 ## Guidelines and information
 
-The default Symphony CMS `Cache-Control` header values for frontend pages indicate that the web browser should rerequest pages from the origin server. This is a good default, and ensures that the most recent dynamic content is displayed on each page load.
+The default Symphony CMS `Cache-Control` response header values for frontend pages indicate that the web browser should re-request pages from the origin server. This is a good default, and ensures that the most recent dynamic content is displayed on each page load.
 
 For websites with content that is not updated extremely frequently, it may be preferable to indicate that pages can be cached by web browsers and, optionally, by intermediary caches such as web proxies, for a certain length of time. Doing so will allow pages to be displayed without HTTP requests re-hitting the origin webserver, potentially saving valuable CPU and memory resources. Additionally, the time taken for pages to be displayed in-browser can be substantially decreased, resulting in more of instantaneous feel to the visitor.
 
-Page HTTP Caching enables HTTP caching by allowing control of:
+Page HTTP Caching enables HTTP caching by allowing control of the following values in the HTTP `Cache-Control` response header:
 
  * intermediary caches (`public` or `private`)
  * `max-age` (in seconds)
