@@ -1,9 +1,10 @@
-fieldset.http_caching fieldset {
+fieldset.settings.page_http_caching fieldset {
 	border-top: 0;
 }
 
-fieldset.http_caching fieldset legend {
+fieldset.settings.page_http_caching fieldset legend {
 	line-height: 1;
+	color: #222222;
 }
 
 fieldset.inline-options label {
