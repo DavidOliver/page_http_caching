@@ -111,7 +111,7 @@ class Extension_Page_HTTP_Caching extends Extension {
 
 		// default intermediary
 		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
-		$fieldset->appendChild(new XMLElement('legend', __('Default: intermediary caches (e.g., web proxies) allowed')));
+		$fieldset->appendChild(new XMLElement('legend', __('Default: allow intermediary caches (e.g., web proxies)')));
 
 		$input = Widget::Input('settings['.self::NAME.'][default_intermediary]', 'no', 'radio', $checked_intermediary_no);
 		$label = Widget::Label(null, $input);
@@ -187,7 +187,7 @@ class Extension_Page_HTTP_Caching extends Extension {
 
 		// intermediary
 		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
-		$fieldset->appendChild(new XMLElement('legend', __('Intermediary caches (e.g., web proxies) allowed')));
+		$fieldset->appendChild(new XMLElement('legend', __('Allow intermediary caches (e.g., web proxies)')));
 
 		$input = Widget::Input(''.self::NAME.'[intermediary]', 'default', 'radio', $checked_intermediary_default);
 		$label = Widget::Label(null, $input);
