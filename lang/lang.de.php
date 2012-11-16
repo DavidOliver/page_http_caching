@@ -6,7 +6,7 @@ $about = array(
 		'name' => '',
 		'email' => '',
 	),
-	'release-date' => '2012-11-313'
+	'release-date' => '2012-11-16'
 );
 
 /**
