@@ -98,7 +98,7 @@ class Extension_Page_HTTP_Caching extends Extension {
 		$fieldset->appendChild(new XMLElement('legend', __('Default: HTTP caching')));
 
 		$input = Widget::Input('settings['.self::NAME.'][default_caching]', 'off', 'radio', $checked_caching_off);
-		$label = Widget::Label(null, $input, null, null, array('title'=>'Native Symphony CMS behaviour'));
+		$label = Widget::Label(null, $input);
 		$label->setValue(__('Off'), false);
 		$fieldset->appendChild($label);
 
