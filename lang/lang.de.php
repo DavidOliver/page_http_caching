@@ -29,9 +29,6 @@ $dictionary = array(
 	'max-age (seconds)' =>
 	'max-age (Sekunden)',
 
-	'Default' =>
-	'Standard',
-
 	'Leave empty to use default' =>
 	'Freilassen, um Standard zu verwenden',
 
