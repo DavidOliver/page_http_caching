@@ -34,3 +34,5 @@ If your content includes sensitive data such as user information, it is recommen
 The `max-age` settings (in seconds) determines how long a browser may choose to serve a page from its cache instead of making an HTTP request. You will want to tailor this value to your website’s content and users.
 
 You may also control these same settings per-Symphony-page if required when editing pages.
+
+The HTTP caching will not be applied if a Symphony CMS author or admin is logged in; this is to allow content editors to see the latest data.
