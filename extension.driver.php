@@ -161,7 +161,7 @@ class Extension_Page_HTTP_Caching extends Extension {
 
 		// form elements
 		$group = new XMLElement('fieldset', null, array('class' => 'settings ' . self::NAME));
-		
+
 		$group->appendChild(new XMLElement('legend', __(self::FULL_NAME)));
 
 		// HTTP cache header
@@ -289,63 +289,68 @@ class Extension_Page_HTTP_Caching extends Extension {
 	}
 
 	public function updateHeaders() {
-		$page_params = Frontend::instance()->Page()->Params();
 
-		// search for page settings
-		//$page_data = Frontend::Page()->pageData();
-		//$page_settings = $this->getPageSettings($page_data['id']);
-		$page_settings = $this->getPageSettings($page_params['current-page-id']);
+		if (Frontend::instance()->isLoggedIn()) {
 
-		$config = Symphony::Configuration()->get(self::NAME);
-		
-		// @TODO: validate preferences
+			$page_params = Frontend::instance()->Page()->Params();
 
-		// if page HTTP caching is not desired
-		if (($page_settings['caching'] != 'on' && $config['default_caching'] != 'on') ||
-			($page_settings['caching'] == 'off')) {
-			return false;
+			// search for page settings
+			//$page_data = Frontend::Page()->pageData();
+			//$page_settings = $this->getPageSettings($page_data['id']);
+			$page_settings = $this->getPageSettings($page_params['current-page-id']);
+
+			$config = Symphony::Configuration()->get(self::NAME);
+
+			// @TODO: validate preferences
+
+			// if page HTTP caching is not desired
+			if (($page_settings['caching'] != 'on' && $config['default_caching'] != 'on') ||
+				($page_settings['caching'] == 'off')) {
+				return false;
+			}
+
+			// page HTTP caching is desired
+			$page_http_caching = array();
+
+			if (!empty($page_settings['max_age'])) {
+				$page_http_caching['max_age'] = $page_settings['max_age'];
+			} elseif (!empty($config['default_max_age'])) {
+				$page_http_caching['max_age'] = $config['default_max_age'];
+			} else {
+				return false;
+			}
+
+			if ($page_settings['intermediary'] == 'no') {
+				$page_http_caching['intermediary'] = 'private';
+			} elseif ($page_settings['intermediary'] == 'yes') {
+				$page_http_caching['intermediary'] = 'public';
+			} elseif ($config['default_intermediary'] == 'yes') {
+				$page_http_caching['intermediary'] = 'public';
+			} else {
+				$page_http_caching['intermediary'] = 'private';
+			}
+
+			// remove unwanted/unnecessary headers
+			if (version_compare($page_params['symphony-version'], '2.3.2', '<')) {
+				// Symphony CMS 2.3 - 2.3.1: set the unwanted header values to be blank
+				Frontend::Page()->addHeaderToPage('Expires', '');
+				Frontend::Page()->addHeaderToPage('Last-Modified', '');
+				Frontend::Page()->addHeaderToPage('Pragma', '');
+			} else {
+				// Symphony CMS 2.3.2+: completely remove headers with new removeHeaderFromPage method
+				Frontend::Page()->removeHeaderFromPage('Expires');
+				Frontend::Page()->removeHeaderFromPage('Last-Modified');
+				Frontend::Page()->removeHeaderFromPage('Pragma');
+			}
+
+			// add HTTP cache header
+			Frontend::Page()->addHeaderToPage(
+				'Cache-Control',
+				$page_http_caching['intermediary'] . ', max-age=' . $page_http_caching['max_age']
+			);
+
 		}
-
-		// page HTTP caching is desired
-		$page_http_caching = array();
-
-		if (!empty($page_settings['max_age'])) {
-			$page_http_caching['max_age'] = $page_settings['max_age'];
-		} elseif (!empty($config['default_max_age'])) {
-			$page_http_caching['max_age'] = $config['default_max_age'];
-		} else {
-			return false;
-		}
-
-		if ($page_settings['intermediary'] == 'no') {
-			$page_http_caching['intermediary'] = 'private';
-		} elseif ($page_settings['intermediary'] == 'yes') {
-			$page_http_caching['intermediary'] = 'public';
-		} elseif ($config['default_intermediary'] == 'yes') {
-			$page_http_caching['intermediary'] = 'public';
-		} else {
-			$page_http_caching['intermediary'] = 'private';
-		}
-
-		// remove unwanted/unnecessary headers
-		if (version_compare($page_params['symphony-version'], '2.3.2', '<')) {
-			// Symphony CMS 2.3 - 2.3.1: set the unwanted header values to be blank
-			Frontend::Page()->addHeaderToPage('Expires', '');
-			Frontend::Page()->addHeaderToPage('Last-Modified', '');
-			Frontend::Page()->addHeaderToPage('Pragma', '');
-		} else {
-			// Symphony CMS 2.3.2+: completely remove headers with new removeHeaderFromPage method
-			Frontend::Page()->removeHeaderFromPage('Expires');
-			Frontend::Page()->removeHeaderFromPage('Last-Modified');
-			Frontend::Page()->removeHeaderFromPage('Pragma');
-		}
-
-		// add HTTP cache header
-		Frontend::Page()->addHeaderToPage(
-			'Cache-Control',
-			$page_http_caching['intermediary'] . ', max-age=' . $page_http_caching['max_age']
-		);
 
 	}
-	
+
 }
