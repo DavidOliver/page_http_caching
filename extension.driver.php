@@ -290,7 +290,7 @@ class Extension_Page_HTTP_Caching extends Extension {
 
 	public function updateHeaders() {
 
-		if (Frontend::instance()->isLoggedIn()) {
+		if (!Frontend::instance()->isLoggedIn()) {
 
 			$page_params = Frontend::instance()->Page()->Params();
 
