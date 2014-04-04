@@ -15,22 +15,25 @@ $about = array(
 $dictionary = array(
 
 	'Page HTTP Caching' =>
-	'Seiten HTTP Caching',
+	'Seite HTTP Caching',
+
+	'Default settings.' =>
+	'Standard Einstellungen.',
 
 	'HTTP caching' =>
 	'HTTP Caching',
 
-	'Default: Allow intermediaries (e.g., proxy caches)' =>
-	'Standard: Erlaube intermediaries (z.B. Proxy-Caches)',
+	'Allow caching proxies to cache' =>
+	'Erlaube Caching-Proxies zu cachen',
 
-	'Allow intermediaries (e.g., proxy caches)' =>
-	'Erlaube intermediaries (z.B. Proxy-Caches)',
-
-	'max-age (seconds)' =>
-	'max-age (Sekunden)',
+	'Maximum age (seconds)' =>
+	'Höchstalter (Sekunden)',
 
 	'Leave empty to use default' =>
 	'Freilassen, um Standard zu verwenden',
+
+	'Default' =>
+	'Standard',
 
 	'Off' =>
 	'Aus',

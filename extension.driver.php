@@ -32,7 +32,7 @@ class Extension_Page_HTTP_Caching extends Extension {
 		Symphony::Configuration()->write();
 		Symphony::Database()->query('DROP TABLE `' . self::TBL_NAME . '`');
 	}
-	
+
 	public function getSubscribedDelegates() {
 		return array(
 			array(
@@ -91,11 +91,11 @@ class Extension_Page_HTTP_Caching extends Extension {
 
 		$group->appendChild(new XMLElement('legend', __(self::FULL_NAME)));
 
-		//$group->appendChild(new XMLElement('p', __('A paragraph for short intructions.'), array('class' => 'help')));
+		$group->appendChild(new XMLElement('p', __('Default settings.'), array('class' => 'help')));
 
 		// default HTTP cache header
 		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
-		$fieldset->appendChild(new XMLElement('legend', __('Default: HTTP caching')));
+		$fieldset->appendChild(new XMLElement('legend', __('HTTP caching')));
 
 		$input = Widget::Input('settings['.self::NAME.'][default_caching]', 'off', 'radio', $checked_caching_off);
 		$label = Widget::Label(null, $input);
@@ -111,7 +111,7 @@ class Extension_Page_HTTP_Caching extends Extension {
 
 		// default intermediary
 		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
-		$fieldset->appendChild(new XMLElement('legend', __('Default: allow intermediary caches (e.g., web proxies)')));
+		$fieldset->appendChild(new XMLElement('legend', __('Allow caching proxies to cache')));
 
 		$input = Widget::Input('settings['.self::NAME.'][default_intermediary]', 'no', 'radio', $checked_intermediary_no);
 		$label = Widget::Label(null, $input);
@@ -125,7 +125,7 @@ class Extension_Page_HTTP_Caching extends Extension {
 
 		$group->appendChild($fieldset);
 
-		// Default max-age
+		// default max-age
 		$input = Widget::Input(
 			'settings['.self::NAME.'][default_max_age]',
 			$config['default_max_age'],
@@ -134,7 +134,7 @@ class Extension_Page_HTTP_Caching extends Extension {
 				'id' => 'page-http-caching-max-age'
 			)
 		);
-		$label = Widget::Label(__('Default: max-age (seconds)'), $input, 'seconds');
+		$label = Widget::Label(__('Maximum age (seconds)'), $input, 'seconds');
 		$group->appendChild($label);
 
 		$context['wrapper']->appendChild($group);
@@ -166,7 +166,7 @@ class Extension_Page_HTTP_Caching extends Extension {
 
 		// HTTP cache header
 		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
-		$fieldset->appendChild(new XMLElement('legend', __('HTTP Caching')));
+		$fieldset->appendChild(new XMLElement('legend', __('HTTP caching')));
 
 		$input = Widget::Input(''.self::NAME.'[caching]', 'default', 'radio', $checked_caching_default);
 		$label = Widget::Label(null, $input);
@@ -187,7 +187,7 @@ class Extension_Page_HTTP_Caching extends Extension {
 
 		// intermediary
 		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
-		$fieldset->appendChild(new XMLElement('legend', __('Allow intermediary caches (e.g., web proxies)')));
+		$fieldset->appendChild(new XMLElement('legend', __('Allow caching proxies to cache')));
 
 		$input = Widget::Input(''.self::NAME.'[intermediary]', 'default', 'radio', $checked_intermediary_default);
 		$label = Widget::Label(null, $input);
@@ -213,10 +213,10 @@ class Extension_Page_HTTP_Caching extends Extension {
 			'text',
 			array(
 				'id' => 'page-http-caching-max-age',
-				'placeholder' => 'Leave empty to use default'
+				'placeholder' => __('Leave empty to use default')
 			)
 		);
-		$label = Widget::Label(__('max-age (seconds)'), $input);
+		$label = Widget::Label(__('Maximum age (seconds)'), $input);
 		$group->appendChild($label);
 
 		$context['form']->appendChild($group);
