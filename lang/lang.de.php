@@ -15,16 +15,16 @@ $about = array(
 $dictionary = array(
 
 	'Page HTTP Caching' =>
-	'Seite HTTP Caching',
+	'Seiten HTTP Caching',
 
 	'HTTP caching' =>
-	'HTTP caching',
+	'HTTP Caching',
 
-	'Default: allow intermediary caches (e.g., web proxies)' =>
-	'Standard: erlauben Intermediary Caches (z.B. Web-Proxies)',
+	'Default: Allow intermediaries (e.g., proxy caches)' =>
+	'Standard: Erlaube intermediaries (z.B. Proxy-Caches)',
 
-	'Allow intermediary caches (e.g., web proxies)' =>
-	'Erlauben Intermediary Caches (z.B. Web-Proxies)',
+	'Allow intermediaries (e.g., proxy caches)' =>
+	'Erlaube intermediaries (z.B. Proxy-Caches)',
 
 	'max-age (seconds)' =>
 	'max-age (Sekunden)',
