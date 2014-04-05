@@ -1,19 +1,21 @@
-fieldset.settings.page_http_caching fieldset {
+.settings.page_http_caching fieldset {
 	border-top: 0;
+	margin-top: 0;
+	padding-top: .5rem;
 }
 
-fieldset.settings.page_http_caching fieldset legend {
-	line-height: 1;
+.settings.page_http_caching fieldset legend {
 	color: #222222;
 }
 
-fieldset.inline-options label {
+.page_http_caching .inline-options label {
 	display: inline-block;
-	margin-right: 20px;
+	margin-top: 0;
+	margin-right: 1.6rem;
 }
 
-fieldset.inline-options label input[type=radio] {
+.page_http_caching .inline-options label input[type=radio] {
 	margin-right: 0;
 	position: relative;
-	top: 3px;
+	top: .27em;
 }

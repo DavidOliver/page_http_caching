@@ -89,53 +89,68 @@ class Extension_Page_HTTP_Caching extends Extension {
 		// form elements
 		$group = new XMLElement('fieldset', null, array('class' => 'settings ' . self::NAME));
 
-		$group->appendChild(new XMLElement('legend', __(self::FULL_NAME)));
+			$group->appendChild(new XMLElement('legend', __(self::FULL_NAME)));
 
-		$group->appendChild(new XMLElement('p', __('Default settings.'), array('class' => 'help')));
+			$group->appendChild(new XMLElement('p', __('Default settings.'), array('class' => 'help')));
 
-		// default HTTP cache header
-		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
-		$fieldset->appendChild(new XMLElement('legend', __('HTTP caching')));
+			$columns = new XMLElement('div', null, array('class' => 'two columns'));
 
-		$input = Widget::Input('settings['.self::NAME.'][default_caching]', 'off', 'radio', $checked_caching_off);
-		$label = Widget::Label(null, $input);
-		$label->setValue(__('Off'), false);
-		$fieldset->appendChild($label);
+				$column = new XMLElement('div', null, array('class' => 'column'));
 
-		$input = Widget::Input('settings['.self::NAME.'][default_caching]', 'on', 'radio', $checked_caching_on);
-		$label = Widget::Label(null, $input);
-		$label->setValue(__('On'), false);
-		$fieldset->appendChild($label);
+					// default HTTP cache header
+					$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
 
-		$group->appendChild($fieldset);
+						$fieldset->appendChild(new XMLElement('legend', __('HTTP caching')));
 
-		// default intermediary
-		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
-		$fieldset->appendChild(new XMLElement('legend', __('Allow caching proxies to cache')));
+						$input = Widget::Input('settings['.self::NAME.'][default_caching]', 'off', 'radio', $checked_caching_off);
+						$label = Widget::Label(null, $input);
+						$label->setValue(__('Off'), false);
+						$fieldset->appendChild($label);
 
-		$input = Widget::Input('settings['.self::NAME.'][default_intermediary]', 'no', 'radio', $checked_intermediary_no);
-		$label = Widget::Label(null, $input);
-		$label->setValue(__('No'), false);
-		$fieldset->appendChild($label);
+						$input = Widget::Input('settings['.self::NAME.'][default_caching]', 'on', 'radio', $checked_caching_on);
+						$label = Widget::Label(null, $input);
+						$label->setValue(__('On'), false);
+						$fieldset->appendChild($label);
 
-		$input = Widget::Input('settings['.self::NAME.'][default_intermediary]', 'yes', 'radio', $checked_intermediary_yes);
-		$label = Widget::Label(null, $input);
-		$label->setValue(__('Yes'), false);
-		$fieldset->appendChild($label);
+					$column->appendChild($fieldset);
 
-		$group->appendChild($fieldset);
+					// default intermediary
+					$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
 
-		// default max-age
-		$input = Widget::Input(
-			'settings['.self::NAME.'][default_max_age]',
-			$config['default_max_age'],
-			'text',
-			array(
-				'id' => 'page-http-caching-max-age'
-			)
-		);
-		$label = Widget::Label(__('Maximum age (seconds)'), $input, 'seconds');
-		$group->appendChild($label);
+						$fieldset->appendChild(new XMLElement('legend', __('Allow caching proxies to cache')));
+
+						$input = Widget::Input('settings['.self::NAME.'][default_intermediary]', 'no', 'radio', $checked_intermediary_no);
+						$label = Widget::Label(null, $input);
+						$label->setValue(__('No'), false);
+						$fieldset->appendChild($label);
+
+						$input = Widget::Input('settings['.self::NAME.'][default_intermediary]', 'yes', 'radio', $checked_intermediary_yes);
+						$label = Widget::Label(null, $input);
+						$label->setValue(__('Yes'), false);
+						$fieldset->appendChild($label);
+
+					$column->appendChild($fieldset);
+
+				$columns->appendChild($column);
+
+				$column = new XMLElement('div', null, array('class' => 'column'));
+
+					// default max-age
+					$input = Widget::Input(
+						'settings['.self::NAME.'][default_max_age]',
+						$config['default_max_age'],
+						'text',
+						array(
+							'id' => 'page-http-caching-max-age'
+						)
+					);
+					$label = Widget::Label(__('Maximum age (seconds)'), $input, 'seconds');
+
+					$column->appendChild($label);
+
+				$columns->appendChild($column);
+
+			$group->appendChild($columns);
 
 		$context['wrapper']->appendChild($group);
 	}
@@ -162,62 +177,77 @@ class Extension_Page_HTTP_Caching extends Extension {
 		// form elements
 		$group = new XMLElement('fieldset', null, array('class' => 'settings ' . self::NAME));
 
-		$group->appendChild(new XMLElement('legend', __(self::FULL_NAME)));
+			$group->appendChild(new XMLElement('legend', __(self::FULL_NAME)));
 
-		// HTTP cache header
-		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
-		$fieldset->appendChild(new XMLElement('legend', __('HTTP caching')));
+			$columns = new XMLElement('div', null, array('class' => 'two columns'));
 
-		$input = Widget::Input(''.self::NAME.'[caching]', 'default', 'radio', $checked_caching_default);
-		$label = Widget::Label(null, $input);
-		$label->setValue(__('Default'), false);
-		$fieldset->appendChild($label);
+				$column = new XMLElement('div', null, array('class' => 'column'));
 
-		$input = Widget::Input(''.self::NAME.'[caching]', 'off', 'radio', $checked_caching_off);
-		$label = Widget::Label(null, $input);
-		$label->setValue(__('Off'), false);
-		$fieldset->appendChild($label);
+					// HTTP cache header
+					$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
 
-		$input = Widget::Input(''.self::NAME.'[caching]', 'on', 'radio', $checked_caching_on);
-		$label = Widget::Label(null, $input);
-		$label->setValue(__('On'), false);
-		$fieldset->appendChild($label);
+						$fieldset->appendChild(new XMLElement('legend', __('HTTP caching')));
 
-		$group->appendChild($fieldset);
+						$input = Widget::Input(''.self::NAME.'[caching]', 'default', 'radio', $checked_caching_default);
+						$label = Widget::Label(null, $input);
+						$label->setValue(__('Default'), false);
+						$fieldset->appendChild($label);
 
-		// intermediary
-		$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
-		$fieldset->appendChild(new XMLElement('legend', __('Allow caching proxies to cache')));
+						$input = Widget::Input(''.self::NAME.'[caching]', 'off', 'radio', $checked_caching_off);
+						$label = Widget::Label(null, $input);
+						$label->setValue(__('Off'), false);
+						$fieldset->appendChild($label);
 
-		$input = Widget::Input(''.self::NAME.'[intermediary]', 'default', 'radio', $checked_intermediary_default);
-		$label = Widget::Label(null, $input);
-		$label->setValue(__('Default'), false);
-		$fieldset->appendChild($label);
+						$input = Widget::Input(''.self::NAME.'[caching]', 'on', 'radio', $checked_caching_on);
+						$label = Widget::Label(null, $input);
+						$label->setValue(__('On'), false);
+						$fieldset->appendChild($label);
 
-		$input = Widget::Input(''.self::NAME.'[intermediary]', 'no', 'radio', $checked_intermediary_no);
-		$label = Widget::Label(null, $input);
-		$label->setValue(__('No'), false);
-		$fieldset->appendChild($label);
+					$column->appendChild($fieldset);
 
-		$input = Widget::Input(''.self::NAME.'[intermediary]', 'yes', 'radio', $checked_intermediary_yes);
-		$label = Widget::Label(null, $input);
-		$label->setValue(__('Yes'), false);
-		$fieldset->appendChild($label);
+					// intermediary
+					$fieldset = new XMLElement('fieldset', null, array('class' => 'inline-options'));
 
-		$group->appendChild($fieldset);
+						$fieldset->appendChild(new XMLElement('legend', __('Allow caching proxies to cache')));
 
-		// max-age
-		$input = Widget::Input(
-			self::NAME.'[max_age]',
-			$page_settings['max_age'],
-			'text',
-			array(
-				'id' => 'page-http-caching-max-age',
-				'placeholder' => __('Leave empty to use default')
-			)
-		);
-		$label = Widget::Label(__('Maximum age (seconds)'), $input);
-		$group->appendChild($label);
+						$input = Widget::Input(''.self::NAME.'[intermediary]', 'default', 'radio', $checked_intermediary_default);
+						$label = Widget::Label(null, $input);
+						$label->setValue(__('Default'), false);
+						$fieldset->appendChild($label);
+
+						$input = Widget::Input(''.self::NAME.'[intermediary]', 'no', 'radio', $checked_intermediary_no);
+						$label = Widget::Label(null, $input);
+						$label->setValue(__('No'), false);
+						$fieldset->appendChild($label);
+
+						$input = Widget::Input(''.self::NAME.'[intermediary]', 'yes', 'radio', $checked_intermediary_yes);
+						$label = Widget::Label(null, $input);
+						$label->setValue(__('Yes'), false);
+						$fieldset->appendChild($label);
+
+					$column->appendChild($fieldset);
+
+				$columns->appendChild($column);
+
+				$column = new XMLElement('div', null, array('class' => 'column'));
+
+					// max-age
+					$input = Widget::Input(
+						self::NAME.'[max_age]',
+						$page_settings['max_age'],
+						'text',
+						array(
+							'id' => 'page-http-caching-max-age',
+							'placeholder' => __('Leave empty to use default')
+						)
+					);
+					$label = Widget::Label(__('Maximum age (seconds)'), $input);
+
+					$column->appendChild($label);
+
+				$columns->appendChild($column);
+
+			$group->appendChild($columns);
 
 		$context['form']->appendChild($group);
 	}
