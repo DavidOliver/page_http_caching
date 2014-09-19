@@ -11,6 +11,10 @@
 		</author>
 	</authors>
 	<releases>
+		<release version="1.0.2" date="2014-09-19" min="2.3" max="2.5">
+			* Fix unwanted headers not being removed in Sym 2.3.2 - 2.4
+			* Release for Sym 2.5
+		</release>
 		<release version="1.0.1" date="2014-04-05" min="2.3" max="2.4">Improve UI layout</release>
 		<release version="1.0.0" date="2014-04-04" min="2.3" max="2.4"></release>
 		<release version="0.1" date="2012-11-14" min="2.3" max="2.4"></release>
