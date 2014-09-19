@@ -320,6 +320,7 @@ class Extension_Page_HTTP_Caching extends Extension {
 
 	public function updateHeaders() {
 
+		// Don’t override/set HTTP caching headers if Symphony user is logged in
 		if (!Frontend::instance()->isLoggedIn()) {
 			return false;
 		}
@@ -342,6 +343,7 @@ class Extension_Page_HTTP_Caching extends Extension {
 		}
 
 		// page HTTP caching is desired
+
 		$page_http_caching = array();
 
 		if (!empty($page_settings['max_age'])) {
@@ -362,14 +364,17 @@ class Extension_Page_HTTP_Caching extends Extension {
 			$page_http_caching['intermediary'] = 'private';
 		}
 
-		// remove unwanted/unnecessary headers
-		if (version_compare($page_params['symphony-version'], '2.3.2', '<')) {
-			// Symphony CMS 2.3 - 2.3.1: set the unwanted header values to be blank
+		// override/remove unwanted headers
+		if (version_compare($page_params['symphony-version'], '2.5.0', '<')) {
+			// Set the unwanted header values to be blank.
 			Frontend::Page()->addHeaderToPage('Expires', '');
 			Frontend::Page()->addHeaderToPage('Last-Modified', '');
 			Frontend::Page()->addHeaderToPage('Pragma', '');
 		} else {
-			// Symphony CMS 2.3.2+: completely remove headers with new removeHeaderFromPage method
+			// Completely remove headers with new removeHeaderFromPage method.
+			// Even though Symphony 2.3.2 added the removeHeaderFromPage method, it wasn’t effective
+			// due to PHP’s session_cache_limiter defaults. Symphony 2.5.0 solves this with
+			// session_cache_limiter('').
 			Frontend::Page()->removeHeaderFromPage('Expires');
 			Frontend::Page()->removeHeaderFromPage('Last-Modified');
 			Frontend::Page()->removeHeaderFromPage('Pragma');
