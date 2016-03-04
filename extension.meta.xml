@@ -11,6 +11,10 @@
 		</author>
 	</authors>
 	<releases>
+		<release version="1.1.0" date="2016-03-03" min="2.3" max="2.x.x">
+			* Fix logic that determines whether to apply HTTP caching headers based on Symphony user logged in status
+			* Marked as compatible with Sym 2.x
+		</release>
 		<release version="1.0.2" date="2014-09-19" min="2.3" max="2.5">
 			* Fix unwanted headers not being removed in Sym 2.3.2 - 2.4
 			* Release for Sym 2.5
