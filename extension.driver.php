@@ -321,7 +321,7 @@ class Extension_Page_HTTP_Caching extends Extension {
 	public function updateHeaders() {
 
 		// Don’t override/set HTTP caching headers if Symphony user is logged in
-		if (!Frontend::instance()->isLoggedIn()) {
+		if (Frontend::instance()->isLoggedIn()) {
 			return false;
 		}
 
